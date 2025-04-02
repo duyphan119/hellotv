@@ -11,12 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
-type DetailsProps = {
-  isFocused: boolean;
-  setOpen: (value: boolean) => void;
-};
-
-const Details = ({ isFocused, setOpen }: DetailsProps) => {
+const Details = () => {
   const { video, currentServerData, currentEpisode } = useVideoDetails();
 
   const queryClient = useQueryClient();
@@ -46,7 +41,6 @@ const Details = ({ isFocused, setOpen }: DetailsProps) => {
           onSuccess() {
             if (invalidateQueries) {
               queryClient.invalidateQueries({ queryKey: ["watching-videos"] });
-              setOpen(false);
             }
           },
         }
@@ -59,7 +53,6 @@ const Details = ({ isFocused, setOpen }: DetailsProps) => {
     <>
       <Streaming
         source={currentServerData.link_m3u8}
-        isFocused={isFocused}
         onSaveCurrentTime={saveCurrentTime}
         slug={video.slug}
       />
@@ -72,18 +65,12 @@ const Details = ({ isFocused, setOpen }: DetailsProps) => {
 export default function VideoSlug() {
   const isFocused = useIsFocused();
 
-  const [open, setOpen] = useState<boolean>(isFocused);
-
   const { video_slug, serverName, episodeSlug, ...params } =
     useLocalSearchParams();
 
   const { data } = useGetVideo({ slug: video_slug as string });
 
-  useEffect(() => {
-    if (isFocused) setOpen(true);
-  }, [isFocused]);
-
-  if (!open || !data) return null;
+  if (!isFocused || !data) return null;
 
   return (
     <ContainerView>
@@ -93,7 +80,7 @@ export default function VideoSlug() {
         episodeSlug={String(episodeSlug || "")}
         {...data}
       >
-        <Details isFocused={isFocused} setOpen={setOpen} />
+        <Details />
       </VideoDetailsProvider>
     </ContainerView>
   );

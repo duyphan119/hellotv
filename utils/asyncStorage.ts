@@ -1,12 +1,16 @@
-import { DownloadedVideo, WatchingVideo } from "@/types";
+import { WatchingVideo } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from "expo-file-system";
 
 export const getWatchingVideos = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem("watchingvideos");
     if (jsonValue != null) {
-      return JSON.parse(jsonValue) as WatchingVideo[];
+      const videos = JSON.parse(jsonValue) as WatchingVideo[];
+      const newVideos = videos.filter(
+        (item) => item.time >= new Date().getTime() - 1000 * 60 * 60 * 24
+      );
+      await saveWatchingVideos(newVideos);
+      return newVideos;
     }
   } catch (error) {
     console.log("getWatchingVideos error: ", error);

@@ -46,10 +46,6 @@ function VideosByCountry({ countrySlug }: VideosByCountryProps) {
 }
 
 export default function TabIndex() {
-  const isFocused = useIsFocused();
-
-  if (!isFocused) return null;
-
   return (
     <ContainerView scrollable={true}>
       <LatestVideoCarousel />

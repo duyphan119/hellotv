@@ -16,13 +16,11 @@ import {
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function Watching() {
-  const isFocused = useIsFocused();
-
   const router = useRouter();
 
   const { data } = useGetWatchingVideos();
 
-  if (!isFocused || !data) return null;
+  if (!data) return null;
   return (
     <ContainerView scrollable>
       {data.map((video, index) => (

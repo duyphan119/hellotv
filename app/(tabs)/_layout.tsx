@@ -22,21 +22,12 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => (
               <MaterialIcons size={28} name="home" color={color} />
             ),
-            animation: "fade",
           }}
         />
         <Tabs.Screen
           name="video/[video_slug]"
           options={{
             href: null,
-            animation: "fade",
-          }}
-        />
-        <Tabs.Screen
-          name="video/watching"
-          options={{
-            href: null,
-            animation: "fade",
           }}
         />
         <Tabs.Screen
@@ -46,7 +37,6 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => (
               <MaterialIcons size={28} name="search" color={color} />
             ),
-            animation: "fade",
           }}
         />
         <Tabs.Screen
@@ -56,7 +46,15 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => (
               <MaterialIcons size={28} name="movie" color={color} />
             ),
-            animation: "fade",
+          }}
+        />
+        <Tabs.Screen
+          name="video/watching"
+          options={{
+            title: "Gần đây",
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons size={28} name="history" color={color} />
+            ),
           }}
         />
       </Tabs>

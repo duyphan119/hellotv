@@ -3,9 +3,8 @@ import VideosFilter from "@/components/VideosFilter";
 import VideosFilterResults from "@/components/VideosFilterResults";
 import typeList from "@/data/typeList";
 import { VideosParams } from "@/types";
-import { useIsFocused } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ContentProps = {
   params: VideosParams;
@@ -15,12 +14,19 @@ function Content(props: ContentProps) {
   const [params, setParams] = useState<VideosParams>(() => ({
     page: 1,
     limit: 18,
-    ...props.params,
   }));
 
   const handleFilter = (newParams: VideosParams) => {
     setParams(newParams);
   };
+
+  useEffect(() => {
+    setParams({
+      page: 1,
+      limit: 18,
+      ...props.params,
+    });
+  }, [props]);
 
   return (
     <ContainerView>
@@ -42,8 +48,6 @@ export default function TabVideosParams() {
           type_list: typeList[0].slug,
         }
   ) as VideosParams;
-  const isFocused = useIsFocused();
-  if (!isFocused) return null;
 
   return <Content params={videosParams} />;
 }

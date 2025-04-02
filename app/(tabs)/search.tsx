@@ -4,7 +4,6 @@ import SearchResults from "@/components/SearchResults";
 import colors from "@/data/colors";
 import { SearchVideosParams, VideosParams } from "@/types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -18,8 +17,6 @@ export default function TabSearch() {
   const handleFilter = (newParams: VideosParams) => {
     setParams(newParams);
   };
-  const isFocused = useIsFocused();
-  if (!isFocused) return null;
 
   return (
     <ContainerView>
@@ -30,6 +27,7 @@ export default function TabSearch() {
           placeholderTextColor={colors.DARK}
           value={keyword}
           onChangeText={(text) => setKeyword(text)}
+          autoFocus={true}
         />
         <TouchableOpacity>
           <MaterialIcons
