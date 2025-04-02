@@ -1,0 +1,23 @@
+export default {
+  BLUE: "#0D6EFD",
+  INDIGO: "#6610F2",
+  PURPLE: "#6F42C1",
+  PINK: "#D63384",
+  RED: "#DC3545",
+  ORANGE: "#FD7E14",
+  YELLOW: "#FFC107",
+  GREEN: "#198754",
+  TEAL: "#20C997",
+  CYAN: "#0DCAF0",
+  WHITE: "#FFF",
+  BLACK: "#000",
+
+  PRIMARY: "#0D6EFD",
+  SECONDARY: "#6C757D",
+  SUCCESS: "#198754",
+  INFO: "#0DCAF0",
+  WARNING: "#FFC107",
+  DANGER: "#DC3545",
+  LIGHT: "#F8F9FA",
+  DARK: "#212529",
+};
