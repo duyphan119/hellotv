@@ -1,6 +1,6 @@
 import colors from "@/data/colors";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 type VideoCardProps = {

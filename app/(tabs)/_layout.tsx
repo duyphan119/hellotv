@@ -1,6 +1,6 @@
 import colors from "@/data/colors";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Tabs } from "expo-router";
+import { Tabs, useNavigation } from "expo-router";
 
 export default function TabLayout() {
   return (

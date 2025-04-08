@@ -1,27 +1,17 @@
 import colors from "@/data/colors";
 import { useVideoDetails } from "@/hooks/useVideoDetails";
 import {
-  Button,
   Dimensions,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
-type VideoEpisodeProps = {
-  videoSlug: string;
-  videoThumbnail: string;
-};
-
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-export default function VideoEpisode({
-  videoSlug,
-  videoThumbnail,
-}: VideoEpisodeProps) {
+export default function VideoEpisodes() {
   const {
     currentEpisode,
     currentServerData,

@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const getWatchingVideos = async () => {
   try {
+    // await AsyncStorage.removeItem("watchingvideos");
     const jsonValue = await AsyncStorage.getItem("watchingvideos");
     if (jsonValue != null) {
       const videos = JSON.parse(jsonValue) as WatchingVideo[];
