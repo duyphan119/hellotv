@@ -23,6 +23,7 @@ export default function ModalVideoPlayer() {
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [serverData, setServerData] = useState<ServerData | null>(null);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [defaultCurrentTime, setDefaultCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
 
   const queryClient = useQueryClient();
@@ -41,7 +42,7 @@ export default function ModalVideoPlayer() {
       ? +params.currentTime
       : watchingVideo?.currentTime ?? 0;
 
-    setCurrentTime(currentTime >= 0 ? currentTime : 0);
+    setDefaultCurrentTime(currentTime >= 0 ? currentTime : 0);
 
     const serverName =
       index === -1 ? params.serverName : watchingVideo?.serverName;
@@ -162,12 +163,13 @@ export default function ModalVideoPlayer() {
     <View style={{ backgroundColor: colors.BACKGROUND, flex: 1 }}>
       {episode && serverData && (
         <VideoPlayer
-          currentTime={currentTime}
-          episode={episode}
+          defaultCurrentTime={defaultCurrentTime}
+          // currentTime={currentTime}
+          // episode={episode}
           serverData={serverData}
-          video={data.video}
+          // video={data.video}
           onChangeNextServerData={handleChangeNextServerData}
-          onChangePreviousServerData={handleChangePreviousServerData}
+          // onChangePreviousServerData={handleChangePreviousServerData}
           setCurrentTime={setCurrentTime}
           setDuration={setDuration}
         />
