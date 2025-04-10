@@ -1,9 +1,4 @@
-import {
-  LatestVideo,
-  LatestVideosParams,
-  LatestVideosResponse,
-  Pagination,
-} from "@/types";
+import { LatestVideosParams, LatestVideosResponse } from "@/types";
 import { objectToQueryString } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 

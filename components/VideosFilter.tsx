@@ -1,10 +1,9 @@
-import videoLanguages from "@/data/videoLanguages";
+import typeList from "@/data/typeList";
 import useGetCategories from "@/hooks/useGetCategories";
 import useGetCountries from "@/hooks/useGetCountries";
 import { VideosParams } from "@/types";
 import { StyleSheet, View } from "react-native";
 import VideosFilterItems from "./VideosFilterItems";
-import typeList from "@/data/typeList";
 
 type VideosFilterProps = {
   onFilter: (params: VideosParams) => void;
@@ -22,6 +21,8 @@ export default function VideosFilter({ onFilter, params }: VideosFilterProps) {
       const value = item - index;
       return { slug: value, name: value };
     });
+
+  if (!countriesData || !categoriesData) return null;
 
   return (
     <View style={styles.filterContainer}>

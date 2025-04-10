@@ -32,7 +32,7 @@ export default function TabSearch() {
         <TouchableOpacity>
           <MaterialIcons
             name="search"
-            color={colors.WHITE}
+            color={colors.TEXT}
             style={styles.searchIcon}
           />
         </TouchableOpacity>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textInput: {
-    color: colors.WHITE,
+    color: colors.TEXT,
     flex: 1,
   },
   searchIcon: {

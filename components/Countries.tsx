@@ -1,5 +1,4 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
 import useGetCountries from "@/hooks/useGetCountries";
 import { Link } from "expo-router";
 import colors from "@/data/colors";
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     paddingVertical: 12,
-    color: colors.WHITE,
+    color: colors.TEXT,
     paddingInline: 5,
   },
   countryName: {

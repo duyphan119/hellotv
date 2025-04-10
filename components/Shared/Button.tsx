@@ -36,7 +36,7 @@ export default function Button({
       <Text
         style={[
           {
-            color: colors.WHITE,
+            color: colors.TEXT,
             backgroundColor: colors.PRIMARY,
 
             paddingInline: 10,

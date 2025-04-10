@@ -1,5 +1,5 @@
 import colors from "@/data/colors";
-import { useVideoDetails } from "@/hooks/useVideoDetails";
+import { Episode, ServerData } from "@/types";
 import {
   Dimensions,
   FlatList,
@@ -11,27 +11,31 @@ import {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-export default function VideoEpisodes() {
-  const {
-    currentEpisode,
-    currentServerData,
-    onChangeServerData,
-    setCurrentEpisode,
-    episodes,
-  } = useVideoDetails();
+type VideoEpisodesProps = {
+  episodes: Episode[];
+  episode: Episode;
+  serverData: ServerData;
+  onChangeServerData: (serverData: ServerData) => void;
+  onChangeEpisode: (episode: Episode) => void;
+};
 
-  if (!currentEpisode) return null;
-
+export default function VideoEpisodes({
+  episode,
+  episodes,
+  serverData,
+  onChangeEpisode,
+  onChangeServerData,
+}: VideoEpisodesProps) {
   return (
     <>
       <View style={styles.serverContainer}>
         {episodes.map((ep, index) => {
-          const isActive = ep.server_name === currentEpisode?.server_name;
+          const isActive = ep.server_name === episode?.server_name;
           return (
             <TouchableOpacity
               key={ep.server_name}
               onPress={() => {
-                setCurrentEpisode(ep);
+                onChangeEpisode(ep);
               }}
               style={{
                 borderColor: colors.LIGHT,
@@ -52,13 +56,13 @@ export default function VideoEpisodes() {
           );
         })}
       </View>
-      {currentServerData && (
+      {episode && serverData && (
         <FlatList
           style={styles.episodeContainer}
           numColumns={4}
-          data={currentEpisode.server_data}
+          data={episode.server_data}
           renderItem={({ item, index }) => {
-            const isActive = currentServerData.link_m3u8 === item.link_m3u8;
+            const isActive = serverData.link_m3u8 === item.link_m3u8;
             return (
               <TouchableOpacity
                 onPress={() => {
@@ -94,6 +98,6 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   text: {
-    color: colors.WHITE,
+    color: colors.TEXT,
   },
 });

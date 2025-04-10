@@ -5,7 +5,6 @@ import WatchingVideos from "@/components/WatchingVideos";
 import { TypeList } from "@/data/typeList";
 import useGetVideosByCountry from "@/hooks/useGetVideosByCountry";
 import useGetVideosByType from "@/hooks/useGetVideosByType";
-import { useIsFocused } from "@react-navigation/native";
 
 type VideosByTypeProps = {
   type: TypeList;

@@ -86,7 +86,7 @@ export default function VideosKeys({ videosKeys }: VideosKeysProps) {
 }
 
 const styles = StyleSheet.create({
-  colorText: { color: colors.WHITE },
+  colorText: { color: colors.TEXT },
   title: {
     fontSize: 28,
     fontWeight: "bold",

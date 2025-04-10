@@ -1,9 +1,8 @@
 import colors from "@/data/colors";
-import { Video, VideosParams, VideosResponse } from "@/types";
+import { Video, VideosParams } from "@/types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -57,8 +56,8 @@ export default function VideosSection({
             key={video._id}
             onPress={() => {
               router.push({
-                pathname: "/(tabs)/video/[video_slug]",
-                params: { video_slug: video.slug },
+                pathname: "/video-player/[slug]",
+                params: { slug: video.slug },
               });
             }}
             style={[styles.video, { marginLeft: index > 0 ? 10 : 0 }]}
@@ -91,12 +90,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     paddingVertical: 12,
-    color: colors.WHITE,
+    color: colors.TEXT,
     paddingInline: 5,
   },
   titleIcon: {
     fontSize: 18,
-    color: colors.WHITE,
+    color: colors.TEXT,
   },
   videos: {
     flexDirection: "row",
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4,
   },
   videoName: {
-    color: colors.WHITE,
+    color: colors.TEXT,
     padding: 2,
   },
 });

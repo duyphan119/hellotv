@@ -55,3 +55,15 @@ export const saveWatchingVideo = async (newItem: WatchingVideo) => {
     console.log("saveWatchingVideo error: ", error);
   }
 };
+
+export const deleteWatchingVideos = async (slugs: string[]) => {
+  try {
+    const watchingVideos = await getWatchingVideos();
+    const newWatchingVideos = watchingVideos.filter(
+      ({ slug }) => !slugs.includes(slug)
+    );
+    await saveWatchingVideos(newWatchingVideos);
+  } catch (error) {
+    console.log("deleteWatchingVideos error: ", error);
+  }
+};

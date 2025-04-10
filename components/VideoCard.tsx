@@ -1,6 +1,6 @@
 import colors from "@/data/colors";
 import { Image } from "expo-image";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Dimensions, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 type VideoCardProps = {
@@ -15,9 +15,9 @@ export default function VideoCard({ name, source, slug }: VideoCardProps) {
     <TouchableOpacity
       onPress={() => {
         router.push({
-          pathname: "/video/[video_slug]",
+          pathname: "/video-player/[slug]",
           params: {
-            video_slug: slug,
+            slug,
           },
         });
       }}
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4,
   },
   videoName: {
-    color: colors.WHITE,
+    color: colors.TEXT,
     padding: 2,
   },
 });

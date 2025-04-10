@@ -21,14 +21,6 @@ const typeList = [
     slug: "hoat-hinh",
     name: "Hoạt hình",
   },
-  // {
-  //   id: "phim-thuyet-minh",
-  //   name: "Phim thuyết minh",
-  // },
-  // {
-  //   id: "phim-long-tieng",
-  //   name: "Phim lồng tiếng",
-  // },
 ] as const;
 
 export default typeList;

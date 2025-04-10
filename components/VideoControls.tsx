@@ -1,73 +1,50 @@
 import colors from "@/data/colors";
-import { useVideoDetails } from "@/hooks/useVideoDetails";
-import { getWatchingVideos, saveWatchingVideos } from "@/utils/asyncStorage";
-import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { useEvent } from "expo";
-import { useVideoPlayer, VideoPlayer, VideoView } from "expo-video";
-import { useEffect, useRef, useState } from "react";
-import {
-  AppState,
-  Dimensions,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
+import { useEvent } from "expo";
+import { VideoPlayer } from "expo-video";
+import { useRef, useState } from "react";
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 
-type PlayerControlsProps = {
+type VideoControlsProps = {
   player: VideoPlayer;
-  onPressNext?: () => void;
-  onPressPrevious?: () => void;
-  onTogglePlayPause?: () => void;
+  currentTime: number;
+  onNext: () => void;
+  onPrevious: () => void;
 };
 
-const PlayerControls = ({ player }: PlayerControlsProps) => {
-  const [open, setOpen] = useState<boolean>(true);
+export default function VideoControls({
+  player,
+  currentTime,
+  onNext,
+  onPrevious,
+}: VideoControlsProps) {
+  const [controlsVisible, setControlsVisible] = useState<boolean>(false);
+
+  const { isPlaying } = useEvent(player, "playingChange", {
+    isPlaying: player.playing,
+  });
 
   const timeoutRef = useRef<any>(null);
-
-  const { onPressNext: handlePressNext, onPressPrevious: handlePressPrevious } =
-    useVideoDetails();
 
   const resetCloseTimer = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      setOpen(false);
+      setControlsVisible(false);
     }, 3333);
   };
 
-  const toggleOpen = () => {
-    setOpen((prev) => {
+  const toggleControlsVisible = () => {
+    setControlsVisible((prev) => {
       const newState = !prev;
       if (newState) resetCloseTimer();
       return newState;
     });
   };
 
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  const { isPlaying } = useEvent(player, "playingChange", {
-    isPlaying: player.playing,
-  });
-
-  const handleSkip10s = () => {
-    resetCloseTimer();
-    player.currentTime = Math.min(player.currentTime + 10, player.duration);
-  };
-
-  const handleBack10s = () => {
-    resetCloseTimer();
-    player.currentTime = Math.max(player.currentTime - 10, 0);
-  };
-
   return (
     <Pressable
-      onPress={toggleOpen}
+      onPress={toggleControlsVisible}
       style={[
         {
           position: "absolute",
@@ -76,30 +53,35 @@ const PlayerControls = ({ player }: PlayerControlsProps) => {
           top: 0,
           bottom: 0,
         },
-        open ? { backgroundColor: "black", opacity: 0.4 } : {},
+        controlsVisible ? { backgroundColor: "black", opacity: 0.4 } : {},
       ]}
     >
-      {open && (
+      {controlsVisible && (
         <>
           <View
             style={{
               flex: 1,
-              // backgroundColor: "blue",
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             <TouchableOpacity
-              onPress={handleBack10s}
+              onPress={() => {
+                resetCloseTimer();
+                player.currentTime = Math.max(player.currentTime - 10, 0);
+              }}
               style={{
                 padding: 10,
               }}
             >
-              <MaterialIcons name="replay-10" size={36} color={colors.WHITE} />
+              <MaterialIcons name="replay-10" size={36} color={colors.TEXT} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handlePressPrevious}
+              onPress={() => {
+                resetCloseTimer();
+                onPrevious();
+              }}
               style={{
                 padding: 10,
                 transform: [
@@ -109,10 +91,11 @@ const PlayerControls = ({ player }: PlayerControlsProps) => {
                 ],
               }}
             >
-              <Entypo name="controller-next" size={36} color={colors.WHITE} />
+              <Entypo name="controller-next" size={36} color={colors.TEXT} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
+                resetCloseTimer();
                 if (isPlaying) {
                   player.pause();
                 } else {
@@ -124,19 +107,31 @@ const PlayerControls = ({ player }: PlayerControlsProps) => {
               <Entypo
                 name={isPlaying ? "controller-paus" : "controller-play"}
                 size={36}
-                color={colors.WHITE}
+                color={colors.TEXT}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handlePressNext} style={{ padding: 10 }}>
-              <Entypo name="controller-next" size={36} color={colors.WHITE} />
+            <TouchableOpacity
+              onPress={() => {
+                resetCloseTimer();
+                onNext();
+              }}
+              style={{ padding: 10 }}
+            >
+              <Entypo name="controller-next" size={36} color={colors.TEXT} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleSkip10s}
+              onPress={() => {
+                resetCloseTimer();
+                player.currentTime = Math.min(
+                  player.currentTime + 10,
+                  player.duration
+                );
+              }}
               style={{
                 padding: 10,
               }}
             >
-              <MaterialIcons name="forward-10" size={36} color={colors.WHITE} />
+              <MaterialIcons name="forward-10" size={36} color={colors.TEXT} />
             </TouchableOpacity>
           </View>
           <View
@@ -153,13 +148,11 @@ const PlayerControls = ({ player }: PlayerControlsProps) => {
               minimumValue={0}
               maximumValue={player.duration}
               step={0.1}
+              value={currentTime}
               minimumTrackTintColor="#FFFFFF"
               maximumTrackTintColor="#000000"
               onSlidingComplete={(value) => {
                 player.currentTime = value;
-              }}
-              onValueChange={() => {
-                resetCloseTimer();
               }}
             />
           </View>
@@ -167,6 +160,6 @@ const PlayerControls = ({ player }: PlayerControlsProps) => {
       )}
     </Pressable>
   );
-};
+}
 
-export default PlayerControls;
+const styles = StyleSheet.create({});

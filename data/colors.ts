@@ -20,4 +20,7 @@ export default {
   DANGER: "#DC3545",
   LIGHT: "#F8F9FA",
   DARK: "#212529",
+
+  BACKGROUND: "#111",
+  TEXT: "#f1f2f3",
 };

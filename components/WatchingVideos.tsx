@@ -23,7 +23,7 @@ export default function WatchingVideos() {
       <TouchableOpacity
         onPress={() => {
           router.push({
-            pathname: "/(tabs)/video/watching",
+            pathname: "/(tabs)/watching",
           });
         }}
       >
@@ -35,11 +35,12 @@ export default function WatchingVideos() {
             key={video.slug}
             onPress={() => {
               router.push({
-                pathname: "/(tabs)/video/[video_slug]",
+                pathname: "/video-player/[slug]",
                 params: {
-                  video_slug: video.slug,
-                  episodeSlug: video.episodeSlug,
+                  slug: video.slug,
+                  currentTime: video.currentTime,
                   serverName: video.serverName,
+                  episodeSlug: video.episodeSlug,
                 },
               });
             }}
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     paddingVertical: 12,
-    color: colors.WHITE,
+    color: colors.TEXT,
     paddingInline: 5,
   },
 
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   videoName: {
-    color: colors.WHITE,
+    color: colors.TEXT,
     padding: 2,
   },
 });

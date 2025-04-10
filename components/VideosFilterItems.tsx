@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
     color: colors.PINK,
   },
   colorText: {
-    color: colors.WHITE,
+    color: colors.TEXT,
   },
 });
