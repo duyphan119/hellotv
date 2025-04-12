@@ -1,10 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
 
-export default function Explore() {
+export default function Watched() {
   return (
     <View>
-      <Text>Explore</Text>
+      <Text>Watched</Text>
     </View>
   );
 }
