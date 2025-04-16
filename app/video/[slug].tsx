@@ -1,6 +1,8 @@
 import EpisodesSection from "@/components/videos/sections/EpisodesSection";
 import InfoSection from "@/components/videos/sections/InfoSection";
-import PlayerSection from "@/components/videos/sections/PlayerSection";
+import PlayerSection, {
+  PlayerSkeletonSection,
+} from "@/components/videos/sections/PlayerSection";
 import { Episode, VideoServer } from "@/data/video";
 import { WatchedVideo } from "@/data/watchedVideo";
 import useCreateWatchedVideo from "@/hooks/useCreateWatchedVideo";
@@ -15,9 +17,9 @@ import {
   BackHandler,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VideoSlug() {
   const params = useLocalSearchParams();
@@ -61,6 +63,9 @@ export default function VideoSlug() {
     createWatchedVideo(inputs, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["watchedVideos"] });
+        queryClient.invalidateQueries({
+          queryKey: ["watchedVideo", inputs.video.slug],
+        });
         onSuccess?.();
       },
     });
@@ -138,24 +143,35 @@ export default function VideoSlug() {
     setEpisode(episode);
 
     if (watchedVideoData) {
+      console.log("watched, ", watchedVideoData.episode.currentTime);
       setCurrentTime(watchedVideoData.episode.currentTime);
     }
   }, [videoData, watchedVideoData]);
 
-  if (!videoData) return <Text>Loading</Text>;
+  if (!videoData)
+    return (
+      <SafeAreaView style={globalStyles.container}>
+        <PlayerSkeletonSection />
+      </SafeAreaView>
+    );
 
   return (
-    <View style={globalStyles.container}>
+    <SafeAreaView style={globalStyles.container}>
       {episode ? (
         <PlayerSection
           source={episode.link_m3u8}
-          currentTime={watchedVideoData?.episode.currentTime || 0}
+          defaultTime={watchedVideoData?.episode.currentTime || 0}
           onUpdateTime={setCurrentTime}
           setDuration={setDuration}
           onPlayToEnd={handlePlayToEnd}
         />
       ) : (
-        <></>
+        <View
+          style={{
+            width: "100%",
+            aspectRatio: 16 / 9,
+          }}
+        ></View>
       )}
       <ScrollView>
         {videoData.video ? <InfoSection video={videoData.video} /> : <></>}
@@ -169,7 +185,7 @@ export default function VideoSlug() {
           />
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

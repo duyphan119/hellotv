@@ -239,3 +239,48 @@ export const getVideosByCountry = async (
     };
   }
 };
+
+export type SearchVideosParams = VideosParams & { keyword: string };
+
+export const searchVideos = async (params: SearchVideosParams) => {
+  try {
+    const {
+      data: {
+        data: {
+          items,
+          APP_DOMAIN_CDN_IMAGE,
+          params: { pagination },
+        },
+      },
+    } = await axios.get(`https://phimapi.com/v1/api/tim-kiem`, {
+      params,
+    });
+
+    return {
+      items: items.map((item: any) => ({
+        id: item._id,
+        name: item.name,
+        originName: item.origin_name,
+        slug: item.slug,
+        thumbnail: `${APP_DOMAIN_CDN_IMAGE}/${item.thumb_url}`,
+        poster: `${APP_DOMAIN_CDN_IMAGE}/${item.poster_url}`,
+        episodeCurrent: item.episode_current,
+        countries: item.country,
+        categories: item.category,
+        language: item.lang,
+      })) as LatestVideo[],
+      pagination: pagination as Pagination,
+    };
+  } catch (error) {
+    console.log(`searchVideos error`, error);
+    return {
+      items: [],
+      pagination: {
+        totalItems: 0,
+        currentPage: 1,
+        totalPages: 1,
+        totalItemsPerPage: 24,
+      },
+    };
+  }
+};

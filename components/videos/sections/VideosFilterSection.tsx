@@ -10,15 +10,16 @@ import VideosFilterItem from "./VideosFilterItem";
 import useGetCategories from "@/hooks/useGetCategories";
 import useGetCountries from "@/hooks/useGetCountries";
 import { VideosFilter } from "@/app/(tabs)/videos";
-import { useEffect } from "react";
 type VideosFilterSectionProps = VideosFilter & {
   onFilter: (filter: VideosFilter) => void;
+  hideTypeListFilter?: boolean;
 };
 export default function VideosFilterSection({
   // countrySlug,
   // categorySlug,
   // typeList,
   // year,
+  hideTypeListFilter,
   onFilter,
   ...props
 }: VideosFilterSectionProps) {
@@ -31,27 +32,24 @@ export default function VideosFilterSection({
 
   return (
     <View style={{ padding: 10, gap: 10 }}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <VideosFilterItem
-          title="Toàn bộ"
-          isActive={typeList === ""}
-          onPress={() => onFilter({ ...props, typeList: "" })}
-        />
-        {[
-          { name: "Phim bộ", slug: "phim-bo" },
-          { name: "Phim lẻ", slug: "phim-le" },
-          { name: "Hoạt hình", slug: "hoat-hinh" },
-          { name: "TV shows", slug: "tv-shows" },
-        ].map((item) => (
-          <VideosFilterItem
-            key={item.slug}
-            title={item.name}
-            isActive={typeList === item.slug}
-            onPress={() => onFilter({ ...props, typeList: item.slug })}
-            style={{ marginLeft: 10 }}
-          />
-        ))}
-      </ScrollView>
+      {!hideTypeListFilter && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {[
+            { name: "Phim bộ", slug: "phim-bo" },
+            { name: "Phim lẻ", slug: "phim-le" },
+            { name: "Hoạt hình", slug: "hoat-hinh" },
+            { name: "TV shows", slug: "tv-shows" },
+          ].map((item, index) => (
+            <VideosFilterItem
+              key={item.slug}
+              title={item.name}
+              isActive={typeList === item.slug}
+              onPress={() => onFilter({ ...props, typeList: item.slug })}
+              style={{ marginLeft: index > 0 ? 10 : 0 }}
+            />
+          ))}
+        </ScrollView>
+      )}
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <VideosFilterItem
           title="Toàn bộ"
@@ -93,7 +91,7 @@ export default function VideosFilterSection({
         {new Array(date.getFullYear() - 1970)
           .fill(date.getFullYear())
           .map((value, index) => {
-            const yearValue = value - index;
+            const yearValue = (value - index).toString();
             return (
               <VideosFilterItem
                 key={index}

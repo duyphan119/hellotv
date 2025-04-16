@@ -35,7 +35,7 @@ export default function VideoCard({
     });
   };
 
-  const gapItems = (numColumns = 1) * 10;
+  const gapItems = (numColumns - 1) * 10;
   const paddingInline = 2 * 10;
 
   return (
@@ -43,8 +43,8 @@ export default function VideoCard({
       onPress={handlePress}
       style={{
         width: (SCREEN_WIDTH - paddingInline - gapItems) / numColumns,
-        marginLeft: index % 3 !== 0 ? 10 : 0,
-        marginTop: index >= 3 ? 10 : 0,
+        marginLeft: index % numColumns !== 0 ? 10 : 0,
+        marginTop: index >= numColumns ? 10 : 0,
       }}
     >
       <View style={styles.imageContainer}>
@@ -60,7 +60,7 @@ export default function VideoCard({
           <Text style={styles.episodeCurrentText}>{video.episodeCurrent}</Text>
         </BlurView>
       </View>
-      <Text style={[globalStyles.text]}>{video.name}</Text>
+      <Text style={styles.videoName}>{video.name}</Text>
     </TouchableOpacity>
   );
 }
@@ -85,12 +85,16 @@ const styles = StyleSheet.create({
   },
   languageText: {
     ...globalStyles.text,
-    fontSize: 12,
+    fontSize: 10,
     textAlign: "center",
   },
   episodeCurrentText: {
     ...globalStyles.text,
-    fontSize: 12,
+    fontSize: 10,
     textAlign: "center",
+  },
+  videoName: {
+    ...globalStyles.text,
+    marginTop: 5,
   },
 });

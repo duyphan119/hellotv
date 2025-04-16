@@ -16,3 +16,4 @@ export const globalStyles = StyleSheet.create({
     color: "#fa11a3",
   },
 });
+// blue icon: #006DF0

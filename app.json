@@ -13,9 +13,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#fa11a3"
+      },
+      "package": "com.duychomap123.hellotv"
     },
     "web": {
       "bundler": "metro",
@@ -27,18 +28,13 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#fa11a3"
         }
       ],
-      [
-        "expo-video",
-        {
-          "supportsPictureInPicture": true
-        }
-      ]
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

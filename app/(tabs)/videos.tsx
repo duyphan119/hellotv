@@ -18,7 +18,7 @@ export default function Videos() {
 
   const router = useRouter();
 
-  const typeList = params?.typeList?.toString() || "";
+  const typeList = params?.typeList?.toString() || "phim-bo";
   const categorySlug = params?.categorySlug?.toString() || "";
   const countrySlug = params?.countrySlug?.toString() || "";
   const year = params?.year?.toString() || "";
@@ -34,8 +34,6 @@ export default function Videos() {
     router.setParams(newFilter);
   };
 
-  console.log(params);
-
   return (
     <SafeAreaView style={globalStyles.container}>
       <VideosFilterSection
@@ -47,19 +45,22 @@ export default function Videos() {
       />
       {data && (
         <FlatList
+          style={{ padding: 10 }}
           data={data.pages.map(({ items }) => items).flat()}
-          numColumns={4}
+          numColumns={3}
           renderItem={({ item: video, index }) => (
-            <VideoCard numColumns={4} video={video} index={index} />
+            <VideoCard video={video} index={index} />
           )}
           onEndReached={() => {
             hasNextPage && fetchNextPage();
           }}
-          ListFooterComponent={() => (
-            <View style={{ alignItems: "center" }}>
-              <ActivityIndicator size={28} color={globalStyles.text.color} />
-            </View>
-          )}
+          ListFooterComponent={() =>
+            hasNextPage && (
+              <View style={{ alignItems: "center" }}>
+                <ActivityIndicator size={28} color={globalStyles.text.color} />
+              </View>
+            )
+          }
         />
       )}
     </SafeAreaView>

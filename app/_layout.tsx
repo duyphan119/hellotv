@@ -13,8 +13,9 @@ export default function RootLayout() {
             presentation: "modal",
             animation: "slide_from_bottom",
             animationDuration: 678,
-            // orientation: 'landscape_left'
             headerShown: false,
+            // orientation: "portrait_up",
+            fullScreenGestureEnabled: true,
           }}
         />
       </Stack>

@@ -1,9 +1,11 @@
+import { globalStyles } from "@/utils/styles";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { Dimensions, StatusBar, StyleSheet, View } from "react-native";
+import { useRef } from "react";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 
 type PlayerSectionProps = {
   source: string;
-  currentTime: number;
+  defaultTime: number;
   onUpdateTime: (newTime: number) => void;
   setDuration: (duration: number) => void;
   onPlayToEnd: () => void;
@@ -11,20 +13,39 @@ type PlayerSectionProps = {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
+export const PlayerSkeletonSection = () => {
+  return (
+    <View
+      style={{
+        width: "100%",
+        aspectRatio: 16 / 9,
+      }}
+    >
+      <ActivityIndicator
+        style={{ margin: "auto" }}
+        size={48}
+        color={globalStyles.textSecondary.color}
+      />
+    </View>
+  );
+};
+
 export default function PlayerSection({
-  currentTime,
+  defaultTime,
   source,
   onUpdateTime,
   setDuration,
   onPlayToEnd,
 }: PlayerSectionProps) {
+  const videoViewRef = useRef<VideoView | null>(null);
+
   const player = useVideoPlayer(source, (player) => {
-    player.currentTime = currentTime;
+    player.currentTime = defaultTime;
     player.play();
     player.timeUpdateEventInterval = 1;
 
     player.addListener("statusChange", ({ status }) => {
-      if (status !== "readyToPlay") {
+      if (status === "readyToPlay") {
         setDuration(player.duration);
       }
     });
@@ -38,15 +59,20 @@ export default function PlayerSection({
     });
   });
   return (
-    <View
-      style={{
-        width: SCREEN_WIDTH,
-        aspectRatio: 16 / 9,
-        marginTop: StatusBar.currentHeight,
-      }}
-    >
-      <VideoView player={player} style={{ width: "100%", height: "100%" }} />
-    </View>
+    <>
+      <View
+        style={{
+          width: "100%",
+          aspectRatio: 16 / 9,
+        }}
+      >
+        <VideoView
+          ref={videoViewRef}
+          player={player}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </View>
+    </>
   );
 }
 

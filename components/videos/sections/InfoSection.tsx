@@ -10,7 +10,6 @@ type InfoSectionProps = {
 };
 
 export default function InfoSection({ video }: InfoSectionProps) {
-  console.log(video);
   return (
     <View style={{ padding: 10, gap: 10 }}>
       <View>

@@ -22,7 +22,10 @@ export const getWatchedVideos = async (): Promise<WatchedVideo[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
     if (jsonValue !== null) {
-      return JSON.parse(jsonValue);
+      const time = new Date().getTime();
+      return JSON.parse(jsonValue).filter(
+        (item: WatchedVideo) => item.time + 3 * 24 * 60 * 60 * 1000 > time
+      );
     }
   } catch (error) {
     console.log("getWatchedVideos error", error);

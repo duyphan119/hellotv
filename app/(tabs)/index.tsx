@@ -1,6 +1,7 @@
 import LatestVideosSection from "@/components/videos/sections/LatestVideosSection";
 import VideosByCountrySection from "@/components/videos/sections/VideosByCountrySection";
 import VideosByTypeListSection from "@/components/videos/sections/VideosByTypeListSection";
+import WatchedVideosSection from "@/components/videos/sections/WatchedVideosSection";
 import { TypeList } from "@/data/video";
 import useGetLatestVideos from "@/hooks/useGetLatestVideos";
 import { globalStyles } from "@/utils/styles";
@@ -14,6 +15,7 @@ export default function Index() {
       <LatestVideosSection
         videos={latestVideosQuery.data?.pages?.[0]?.items.slice(0, 6) || []}
       />
+      <WatchedVideosSection />
       {["han-quoc", "trung-quoc", "nhat-ban"].map((countrySlug) => (
         <VideosByCountrySection key={countrySlug} countrySlug={countrySlug} />
       ))}

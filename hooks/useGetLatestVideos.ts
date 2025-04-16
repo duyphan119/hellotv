@@ -7,6 +7,6 @@ export default function useGetLatestVideos() {
     queryFn: ({ pageParam }) => getLatestVideos({ page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: ({ pagination: { currentPage, totalPages } }) =>
-      Math.min(currentPage + 1, totalPages),
+      currentPage + 1 > totalPages ? undefined : currentPage + 1,
   });
 }

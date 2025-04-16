@@ -6,7 +6,7 @@ export default function useGetVideosByTypeList(
   params?: VideosParams
 ) {
   return useInfiniteQuery({
-    queryKey: ["videos", typeList],
+    queryKey: ["videos", typeList, params],
     queryFn: ({ pageParam }) =>
       getVideosByTypeList(typeList, {
         ...params,
@@ -14,6 +14,6 @@ export default function useGetVideosByTypeList(
       }),
     initialPageParam: 1,
     getNextPageParam: ({ pagination: { currentPage, totalPages } }) =>
-      Math.min(currentPage + 1, totalPages),
+      currentPage + 1 > totalPages ? undefined : currentPage + 1,
   });
 }

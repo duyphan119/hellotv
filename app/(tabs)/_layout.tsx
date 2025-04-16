@@ -44,10 +44,16 @@ export default function _layout() {
       <Tabs.Screen
         name="watched"
         options={{
+          headerShown: true,
           title: "Đã xem",
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="history" color={color} />
           ),
+          headerStyle: {
+            backgroundColor: globalStyles.textPrimary.color,
+          },
+          headerTitleStyle: globalStyles.text,
+          headerTitle: "Đã xem gần đây",
         }}
       />
     </Tabs>
