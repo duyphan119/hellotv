@@ -1,5 +1,5 @@
 import { getVideosByTypeList, TypeList, VideosParams } from "@/data/video";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 export default function useGetVideosByTypeList(
   typeList: TypeList,

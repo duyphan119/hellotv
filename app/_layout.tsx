@@ -14,7 +14,6 @@ export default function RootLayout() {
             animation: "slide_from_bottom",
             animationDuration: 678,
             headerShown: false,
-            // orientation: "portrait_up",
             fullScreenGestureEnabled: true,
           }}
         />

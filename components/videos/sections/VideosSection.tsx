@@ -1,17 +1,7 @@
 import { LatestVideo } from "@/data/video";
 import { globalStyles } from "@/utils/styles";
 import { Href, Link } from "expo-router";
-import {
-  Dimensions,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Image } from "expo-image";
-import { BlurView } from "expo-blur";
+import { FlatList, StyleSheet, View } from "react-native";
 import VideoCard from "./VideoCard";
 
 type VideosSectionProps = {
@@ -20,16 +10,14 @@ type VideosSectionProps = {
   videos: LatestVideo[];
 };
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-
 export default function VideosSection({
   title,
   href,
   videos,
 }: VideosSectionProps) {
   return (
-    <View style={{ gap: 10, padding: 10 }}>
-      <Link href={href} style={[globalStyles.text, { fontSize: 20 }]}>
+    <View style={styles.container}>
+      <Link href={href} style={styles.title}>
         {title}
       </Link>
       <FlatList
@@ -44,4 +32,10 @@ export default function VideosSection({
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: { gap: 10, padding: 10 },
+  title: {
+    ...globalStyles.text,
+    fontSize: 20,
+  },
+});

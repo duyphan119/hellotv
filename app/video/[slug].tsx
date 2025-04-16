@@ -56,6 +56,12 @@ export default function VideoSlug() {
     }
   };
 
+  const handleSelectEpisode = (newEpisode: Episode) => {
+    setEpisode(newEpisode);
+    setCurrentTime(0);
+    setDuration(0);
+  };
+
   const handleCreateWatchedVideo = (
     inputs: WatchedVideo,
     onSuccess?: () => void
@@ -143,7 +149,6 @@ export default function VideoSlug() {
     setEpisode(episode);
 
     if (watchedVideoData) {
-      console.log("watched, ", watchedVideoData.episode.currentTime);
       setCurrentTime(watchedVideoData.episode.currentTime);
     }
   }, [videoData, watchedVideoData]);
@@ -156,22 +161,17 @@ export default function VideoSlug() {
     );
 
   return (
-    <SafeAreaView style={globalStyles.container}>
+    <SafeAreaView style={[globalStyles.container]}>
       {episode ? (
         <PlayerSection
           source={episode.link_m3u8}
-          defaultTime={watchedVideoData?.episode.currentTime || 0}
+          currentTime={currentTime}
           onUpdateTime={setCurrentTime}
           setDuration={setDuration}
           onPlayToEnd={handlePlayToEnd}
         />
       ) : (
-        <View
-          style={{
-            width: "100%",
-            aspectRatio: 16 / 9,
-          }}
-        ></View>
+        <PlayerSkeletonSection />
       )}
       <ScrollView>
         {videoData.video ? <InfoSection video={videoData.video} /> : <></>}
@@ -181,7 +181,7 @@ export default function VideoSlug() {
             server={server}
             episode={episode}
             onSelectServer={setServer}
-            onSelectEpisode={setEpisode}
+            onSelectEpisode={handleSelectEpisode}
           />
         )}
       </ScrollView>

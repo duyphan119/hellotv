@@ -40,7 +40,9 @@ export default function EpisodesSection({
               key={item.name}
               onPress={() => setServer(item)}
               style={{
-                backgroundColor: isActive ? "green" : "blue",
+                backgroundColor: isActive
+                  ? globalStyles.textPrimary.color
+                  : globalStyles.textBlue.color,
                 padding: 8,
                 borderRadius: 4,
                 flexDirection: "row",
@@ -75,12 +77,23 @@ export default function EpisodesSection({
               }}
               style={{
                 width: (SCREEN_WIDTH - 20 - 30) / 4,
-                padding: 10,
-                backgroundColor: isActive ? "green" : "blue",
+                paddingBlock: 10,
+                backgroundColor: isActive
+                  ? globalStyles.textPrimary.color
+                  : globalStyles.textBlue.color,
                 justifyContent: "center",
                 alignItems: "center",
+                flexDirection: "row",
+                gap: 5,
               }}
             >
+              {isActive && (
+                <MaterialIcons
+                  name="check"
+                  color={globalStyles.text.color}
+                  size={14}
+                />
+              )}
               <Text style={[globalStyles.text]}>{item.name}</Text>
             </TouchableOpacity>
           );

@@ -15,5 +15,7 @@ export const globalStyles = StyleSheet.create({
   textPrimary: {
     color: "#fa11a3",
   },
+  textBlue: {
+    color: "#006DF0",
+  },
 });
-// blue icon: #006DF0

@@ -14,20 +14,13 @@ export default function VideosFilterItem({
   isActive,
   onPress,
 }: VideosFilterItemProps) {
+  const borderColor = isActive
+    ? globalStyles.textPrimary.color
+    : globalStyles.text.color;
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[
-        {
-          padding: 5,
-          borderWidth: 1,
-          borderColor: isActive
-            ? globalStyles.textPrimary.color
-            : globalStyles.text.color,
-          borderRadius: 10,
-        },
-        style,
-      ]}
+      style={[styles.button, { borderColor }, style]}
     >
       <Text
         style={[
@@ -41,4 +34,10 @@ export default function VideosFilterItem({
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  button: {
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+});

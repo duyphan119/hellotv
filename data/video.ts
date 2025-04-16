@@ -13,6 +13,7 @@ export type LatestVideo = {
   categories: Category[];
   countries: Country[];
   language: string;
+  year: number;
 };
 
 export type Pagination = {
@@ -88,6 +89,16 @@ export type Episode = {
   link_embed: string;
 };
 
+const DEFAULT_VIDEOS_RESPONSE = {
+  items: [],
+  pagination: {
+    totalItems: 0,
+    currentPage: 1,
+    totalPages: 1,
+    totalItemsPerPage: 24,
+  },
+};
+
 export const getVideo = async (slug: string) => {
   try {
     const {
@@ -109,6 +120,7 @@ export const getVideo = async (slug: string) => {
       episodeCurrent: movie.episode_current,
       language: movie.lang,
       totalEpisodes: +movie.episode_total,
+      year: movie.year,
     };
 
     const servers: VideoServer[] = episodes.map((item: any) => ({
@@ -180,13 +192,7 @@ export const getVideosByTypeList = async (
     console.log("getVideosByTypeList error", error);
     return {
       titlePage: "",
-      items: [],
-      pagination: {
-        totalItems: 0,
-        currentPage: 1,
-        totalPages: 1,
-        totalItemsPerPage: 24,
-      },
+      ...DEFAULT_VIDEOS_RESPONSE,
     };
   }
 };
@@ -229,13 +235,7 @@ export const getVideosByCountry = async (
     console.log("getVideosByCountry error", error);
     return {
       titlePage: "",
-      items: [],
-      pagination: {
-        totalItems: 0,
-        currentPage: 1,
-        totalPages: 1,
-        totalItemsPerPage: 24,
-      },
+      ...DEFAULT_VIDEOS_RESPONSE,
     };
   }
 };
@@ -243,44 +243,38 @@ export const getVideosByCountry = async (
 export type SearchVideosParams = VideosParams & { keyword: string };
 
 export const searchVideos = async (params: SearchVideosParams) => {
-  try {
-    const {
-      data: {
+  if (params.keyword) {
+    try {
+      const {
         data: {
-          items,
-          APP_DOMAIN_CDN_IMAGE,
-          params: { pagination },
+          data: {
+            items,
+            APP_DOMAIN_CDN_IMAGE,
+            params: { pagination },
+          },
         },
-      },
-    } = await axios.get(`https://phimapi.com/v1/api/tim-kiem`, {
-      params,
-    });
+      } = await axios.get(`https://phimapi.com/v1/api/tim-kiem`, {
+        params,
+      });
 
-    return {
-      items: items.map((item: any) => ({
-        id: item._id,
-        name: item.name,
-        originName: item.origin_name,
-        slug: item.slug,
-        thumbnail: `${APP_DOMAIN_CDN_IMAGE}/${item.thumb_url}`,
-        poster: `${APP_DOMAIN_CDN_IMAGE}/${item.poster_url}`,
-        episodeCurrent: item.episode_current,
-        countries: item.country,
-        categories: item.category,
-        language: item.lang,
-      })) as LatestVideo[],
-      pagination: pagination as Pagination,
-    };
-  } catch (error) {
-    console.log(`searchVideos error`, error);
-    return {
-      items: [],
-      pagination: {
-        totalItems: 0,
-        currentPage: 1,
-        totalPages: 1,
-        totalItemsPerPage: 24,
-      },
-    };
+      return {
+        items: items.map((item: any) => ({
+          id: item._id,
+          name: item.name,
+          originName: item.origin_name,
+          slug: item.slug,
+          thumbnail: `${APP_DOMAIN_CDN_IMAGE}/${item.thumb_url}`,
+          poster: `${APP_DOMAIN_CDN_IMAGE}/${item.poster_url}`,
+          episodeCurrent: item.episode_current,
+          countries: item.country,
+          categories: item.category,
+          language: item.lang,
+        })) as LatestVideo[],
+        pagination: pagination as Pagination,
+      };
+    } catch (error) {
+      console.log(`searchVideos error`, error);
+    }
   }
+  return DEFAULT_VIDEOS_RESPONSE;
 };

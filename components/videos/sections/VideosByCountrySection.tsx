@@ -1,5 +1,4 @@
 import useGetVideosByCountry from "@/hooks/useGetVideosByCountry";
-import { StyleSheet, Text, View } from "react-native";
 import VideosSection from "./VideosSection";
 
 type VideosByCountrySectionProps = {
@@ -24,5 +23,3 @@ export default function VideosByCountrySection({
     />
   );
 }
-
-const styles = StyleSheet.create({});

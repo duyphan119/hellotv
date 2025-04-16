@@ -18,6 +18,7 @@ export default function InfoSection({ video }: InfoSectionProps) {
       </View>
       <View style={{ gap: 10 }}>
         <Text style={[globalStyles.text]}>Đạo diễn: {video.director}</Text>
+        <Text style={[globalStyles.text]}>Năm: {video.year}</Text>
         <Text style={[globalStyles.text]}>
           Quốc gia:{" "}
           {video.countries.map(({ name, slug }, index) => (
@@ -35,6 +36,9 @@ export default function InfoSection({ video }: InfoSectionProps) {
               <Link href="/">{name}</Link>
             </Fragment>
           ))}
+        </Text>
+        <Text style={[globalStyles.text]}>
+          Diễn viên: {video.actors.join(", ")}
         </Text>
         <VideoContent content={video.content} />
       </View>

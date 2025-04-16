@@ -19,7 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { VideosFilter } from "./videos";
 
 export default function Explore() {
-  const [text, setText] = useState<string>("conan");
+  const [text, setText] = useState<string>("");
 
   const [debouncedText] = useDebounce([text], 345);
 
@@ -61,15 +61,7 @@ export default function Explore() {
 
   return (
     <SafeAreaView style={globalStyles.container}>
-      <View
-        style={{
-          borderWidth: 1,
-          borderColor: globalStyles.textSecondary.color,
-          borderRadius: 4,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.searchContainer}>
         <TextInput
           ref={textInputRef}
           value={text}
@@ -124,4 +116,12 @@ export default function Explore() {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  searchContainer: {
+    borderWidth: 1,
+    borderColor: globalStyles.textSecondary.color,
+    borderRadius: 4,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});

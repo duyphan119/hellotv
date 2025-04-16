@@ -8,8 +8,8 @@ export default function WatchedVideosSection() {
   const { data } = useGetWatchedVideos();
   if (!data || data.length === 0) return null;
   return (
-    <View style={{ gap: 10, padding: 10 }}>
-      <Link href="/watched" style={[globalStyles.text, { fontSize: 20 }]}>
+    <View style={styles.container}>
+      <Link href="/watched" style={styles.title}>
         Đã xem gần đây
       </Link>
       <FlatList
@@ -24,4 +24,10 @@ export default function WatchedVideosSection() {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: { gap: 10, padding: 10 },
+  title: {
+    ...globalStyles.text,
+    fontSize: 20,
+  },
+});

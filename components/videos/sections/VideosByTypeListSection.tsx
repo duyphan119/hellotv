@@ -1,6 +1,5 @@
 import { TypeList } from "@/data/video";
 import useGetVideosByTypeList from "@/hooks/useGetVideosByTypeList";
-import { StyleSheet } from "react-native";
 import VideosSection from "./VideosSection";
 
 type VideosByTypeListSectionProps = {
@@ -25,5 +24,3 @@ export default function VideosByTypeListSection({
     />
   );
 }
-
-const styles = StyleSheet.create({});

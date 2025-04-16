@@ -1,11 +1,11 @@
 import { globalStyles } from "@/utils/styles";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 
 type PlayerSectionProps = {
   source: string;
-  defaultTime: number;
+  currentTime: number;
   onUpdateTime: (newTime: number) => void;
   setDuration: (duration: number) => void;
   onPlayToEnd: () => void;
@@ -31,13 +31,15 @@ export const PlayerSkeletonSection = () => {
 };
 
 export default function PlayerSection({
-  defaultTime,
+  currentTime,
   source,
   onUpdateTime,
   setDuration,
   onPlayToEnd,
 }: PlayerSectionProps) {
   const videoViewRef = useRef<VideoView | null>(null);
+
+  const defaultTime = useMemo(() => currentTime, [source]);
 
   const player = useVideoPlayer(source, (player) => {
     player.currentTime = defaultTime;
@@ -59,20 +61,19 @@ export default function PlayerSection({
     });
   });
   return (
-    <>
-      <View
-        style={{
-          width: "100%",
-          aspectRatio: 16 / 9,
-        }}
-      >
-        <VideoView
-          ref={videoViewRef}
-          player={player}
-          style={{ width: "100%", height: "100%" }}
-        />
-      </View>
-    </>
+    <View
+      style={{
+        width: "100%",
+        aspectRatio: 16 / 9,
+        backgroundColor: "#000",
+      }}
+    >
+      <VideoView
+        ref={videoViewRef}
+        player={player}
+        style={{ width: "100%", height: "100%" }}
+      />
+    </View>
   );
 }
 

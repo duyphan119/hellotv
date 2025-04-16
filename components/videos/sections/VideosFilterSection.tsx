@@ -15,10 +15,6 @@ type VideosFilterSectionProps = VideosFilter & {
   hideTypeListFilter?: boolean;
 };
 export default function VideosFilterSection({
-  // countrySlug,
-  // categorySlug,
-  // typeList,
-  // year,
   hideTypeListFilter,
   onFilter,
   ...props
@@ -31,7 +27,7 @@ export default function VideosFilterSection({
   const date = new Date();
 
   return (
-    <View style={{ padding: 10, gap: 10 }}>
+    <View style={styles.container}>
       {!hideTypeListFilter && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {[
@@ -107,4 +103,6 @@ export default function VideosFilterSection({
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: { padding: 10, gap: 10 },
+});
