@@ -5,5 +5,6 @@ export default function useGetWatchedVideos() {
   return useQuery({
     queryKey: ["watchedVideos"],
     queryFn: () => getWatchedVideos(),
+    // staleTime: 1000,
   });
 }

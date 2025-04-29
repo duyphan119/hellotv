@@ -34,6 +34,7 @@ export default function WatchedVideoCard({
       pathname: "/video/[slug]",
       params: {
         slug: video.slug,
+        defaultTime: episode.currentTime,
       },
     });
   };

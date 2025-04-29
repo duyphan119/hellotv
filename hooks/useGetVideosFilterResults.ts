@@ -7,5 +7,6 @@ export default function useGetVideosFilterResults(filter: VideosFilter) {
     ...(filter.categorySlug ? { category: filter.categorySlug } : {}),
     ...(filter.countrySlug ? { country: filter.countrySlug } : {}),
     ...(filter.year ? { year: filter.year } : {}),
+    limit: 12,
   });
 }

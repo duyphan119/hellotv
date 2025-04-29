@@ -18,4 +18,7 @@ export const globalStyles = StyleSheet.create({
   textBlue: {
     color: "#006DF0",
   },
+  textBlack: {
+    color: "#111",
+  },
 });

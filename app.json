@@ -34,7 +34,13 @@
           "backgroundColor": "#fa11a3"
         }
       ],
-      "expo-video"
+      "expo-video",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

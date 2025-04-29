@@ -1,17 +1,24 @@
 import { globalStyles } from "@/utils/styles";
+import { useRouter } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { useMemo, useRef } from "react";
-import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
+import { useEffect, useRef } from "react";
+import {
+  ActivityIndicator,
+  AppState,
+  BackHandler,
+  StyleSheet,
+  View,
+} from "react-native";
 
 type PlayerSectionProps = {
   source: string;
-  currentTime: number;
-  onUpdateTime: (newTime: number) => void;
-  setDuration: (duration: number) => void;
-  onPlayToEnd: () => void;
+  defaultTime: number;
+  onSaveCurrentTime: (
+    currentTime: number,
+    duration: number,
+    onSettled?: () => void
+  ) => void;
 };
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export const PlayerSkeletonSection = () => {
   return (
@@ -31,43 +38,43 @@ export const PlayerSkeletonSection = () => {
 };
 
 export default function PlayerSection({
-  currentTime,
+  defaultTime,
   source,
-  onUpdateTime,
-  setDuration,
-  onPlayToEnd,
+  onSaveCurrentTime,
 }: PlayerSectionProps) {
-  const videoViewRef = useRef<VideoView | null>(null);
+  const router = useRouter();
 
-  const defaultTime = useMemo(() => currentTime, [source]);
+  const videoViewRef = useRef<VideoView | null>(null);
 
   const player = useVideoPlayer(source, (player) => {
     player.currentTime = defaultTime;
     player.play();
-    player.timeUpdateEventInterval = 1;
-
-    player.addListener("statusChange", ({ status }) => {
-      if (status === "readyToPlay") {
-        setDuration(player.duration);
-      }
-    });
-
-    player.addListener("timeUpdate", ({ currentTime }) => {
-      onUpdateTime(currentTime);
-    });
-
-    player.addListener("playToEnd", () => {
-      onPlayToEnd();
-    });
   });
+
+  useEffect(() => {
+    const appState = AppState.addEventListener("change", (state) => {
+      if (state !== "active")
+        onSaveCurrentTime(player.currentTime, player.duration);
+    });
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        onSaveCurrentTime(player.currentTime, player.duration, () => {
+          router.canGoBack() && router.back();
+        });
+        return true;
+      }
+    );
+
+    return () => {
+      appState.remove();
+      backHandler.remove();
+    };
+  }, [player.currentTime, player.duration]);
+
   return (
-    <View
-      style={{
-        width: "100%",
-        aspectRatio: 16 / 9,
-        backgroundColor: "#000",
-      }}
-    >
+    <View style={styles.container}>
       <VideoView
         ref={videoViewRef}
         player={player}
@@ -77,4 +84,11 @@ export default function PlayerSection({
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+    backgroundColor: "#000",
+    position: "relative",
+  },
+});

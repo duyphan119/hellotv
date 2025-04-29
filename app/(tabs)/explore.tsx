@@ -38,6 +38,7 @@ export default function Explore() {
     country: countrySlug,
     year,
     keyword: debouncedText,
+    limit: 12,
   });
 
   const handleFilter = (newFilter: VideosFilter) => {

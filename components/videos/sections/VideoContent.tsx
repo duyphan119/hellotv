@@ -1,6 +1,6 @@
 import { globalStyles } from "@/utils/styles";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 
 type VideoContentProps = {
   content: string;
@@ -20,7 +20,7 @@ export default function VideoContent({ content }: VideoContentProps) {
         <Text
           onPress={() => setIsMore((prevState) => !prevState)}
           style={[
-            globalStyles.text,
+            globalStyles.textPrimary,
             {
               flexWrap: "wrap",
               textDecorationLine: "underline",

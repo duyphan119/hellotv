@@ -47,6 +47,8 @@ export const getWatchedVideo = async (slug: string) => {
 
 export const createWatchedVideo = async (inputs: WatchedVideo) => {
   try {
+    if (inputs.episode.currentTime <= 5) return;
+
     const watchedVideos = await getWatchedVideos();
 
     const index = watchedVideos.findIndex(

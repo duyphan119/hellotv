@@ -4,80 +4,45 @@ import PlayerSection, {
   PlayerSkeletonSection,
 } from "@/components/videos/sections/PlayerSection";
 import { Episode, VideoServer } from "@/data/video";
-import { WatchedVideo } from "@/data/watchedVideo";
+import { createWatchedVideo } from "@/data/watchedVideo";
 import useCreateWatchedVideo from "@/hooks/useCreateWatchedVideo";
 import useGetVideo from "@/hooks/useGetVideo";
 import useGetWatchedVideo from "@/hooks/useGetWatchedVideo";
 import { globalStyles } from "@/utils/styles";
 import { useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  AppState,
-  BackHandler,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VideoSlug() {
   const params = useLocalSearchParams();
 
-  const router = useRouter();
-
   const slugStr = params?.slug?.toString() || "";
+  const defaultTimeStr = params?.defaultTime?.toString() || "0";
 
-  const { data: videoData } = useGetVideo(slugStr);
+  const { data: videoData, isLoading: videoDataIsLoading } =
+    useGetVideo(slugStr);
   const { data: watchedVideoData } = useGetWatchedVideo(slugStr);
 
-  const { mutate: createWatchedVideo } = useCreateWatchedVideo();
+  const { mutate } = useCreateWatchedVideo();
 
   const queryClient = useQueryClient();
 
   const [server, setServer] = useState<VideoServer>();
   const [episode, setEpisode] = useState<Episode>();
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
-
-  const handlePlayToEnd = () => {
-    if (server && episode) {
-      const index = server.episodes.findIndex(
-        (item) => item.name === episode.name
-      );
-
-      if (index === -1) return;
-
-      const nextIndex = (index + 1) % server.episodes.length;
-
-      if (!server.episodes[nextIndex]) return;
-
-      setEpisode(server.episodes[nextIndex]);
-    }
-  };
+  const [defaultTime, setDefaultTime] = useState<number>(+defaultTimeStr);
 
   const handleSelectEpisode = (newEpisode: Episode) => {
     setEpisode(newEpisode);
-    setCurrentTime(0);
-    setDuration(0);
+    setDefaultTime(0);
   };
 
-  const handleCreateWatchedVideo = (
-    inputs: WatchedVideo,
-    onSuccess?: () => void
+  const handleSaveCurrentTime = (
+    currentTime: number,
+    duration: number,
+    onSettled?: () => void
   ) => {
-    createWatchedVideo(inputs, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["watchedVideos"] });
-        queryClient.invalidateQueries({
-          queryKey: ["watchedVideo", inputs.video.slug],
-        });
-        onSuccess?.();
-      },
-    });
-  };
-
-  useEffect(() => {
     if (episode && server && videoData && videoData.video) {
       const inputs = {
         episode: {
@@ -94,27 +59,17 @@ export default function VideoSlug() {
           slug: videoData.video.slug,
         },
       };
-      const appState = AppState.addEventListener("change", (state) => {
-        if (state !== "active") {
-          handleCreateWatchedVideo(inputs);
-        }
-      });
-      const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        () => {
-          handleCreateWatchedVideo(inputs, () => {
-            router.canGoBack() && router.back();
+      mutate(inputs, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["watchedVideos"] });
+          queryClient.invalidateQueries({
+            queryKey: ["watchedVideo", inputs.video.slug],
           });
-          return true;
-        }
-      );
-
-      return () => {
-        backHandler.remove();
-        appState.remove();
-      };
+        },
+        onSettled,
+      });
     }
-  }, [episode, server, videoData, currentTime, duration]);
+  };
 
   useEffect(() => {
     if (!videoData) return;
@@ -147,13 +102,13 @@ export default function VideoSlug() {
     if (!episode) return;
 
     setEpisode(episode);
-
-    if (watchedVideoData) {
-      setCurrentTime(watchedVideoData.episode.currentTime);
-    }
   }, [videoData, watchedVideoData]);
 
-  if (!videoData)
+  useEffect(() => {
+    setDefaultTime(+defaultTimeStr);
+  }, [defaultTimeStr]);
+
+  if (!videoData || videoDataIsLoading)
     return (
       <SafeAreaView style={globalStyles.container}>
         <PlayerSkeletonSection />
@@ -162,18 +117,16 @@ export default function VideoSlug() {
 
   return (
     <SafeAreaView style={[globalStyles.container]}>
-      {episode ? (
+      {videoData.video && episode ? (
         <PlayerSection
           source={episode.link_m3u8}
-          currentTime={currentTime}
-          onUpdateTime={setCurrentTime}
-          setDuration={setDuration}
-          onPlayToEnd={handlePlayToEnd}
+          defaultTime={defaultTime}
+          onSaveCurrentTime={handleSaveCurrentTime}
         />
       ) : (
         <PlayerSkeletonSection />
       )}
-      <ScrollView>
+      <View style={{ padding: 10, gap: 10, flex: 1 }}>
         {videoData.video ? <InfoSection video={videoData.video} /> : <></>}
         {episode && server && (
           <EpisodesSection
@@ -182,11 +135,10 @@ export default function VideoSlug() {
             episode={episode}
             onSelectServer={setServer}
             onSelectEpisode={handleSelectEpisode}
+            thumbnail={videoData.video?.thumbnail || ""}
           />
         )}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({});
