@@ -1,4 +1,3 @@
-import { globalStyles } from "@/utils/styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
@@ -7,11 +6,11 @@ export default function _layout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: globalStyles.textPrimary.color,
+        tabBarActiveTintColor: "fuchsia",
         tabBarStyle: {
-          backgroundColor: globalStyles.container.backgroundColor,
+          backgroundColor: "black",
         },
-        tabBarInactiveTintColor: globalStyles.text.color,
+        tabBarInactiveTintColor: "white",
       }}
     >
       <Tabs.Screen
@@ -50,9 +49,9 @@ export default function _layout() {
             <MaterialIcons size={28} name="history" color={color} />
           ),
           headerStyle: {
-            backgroundColor: globalStyles.textPrimary.color,
+            backgroundColor: "black",
           },
-          headerTitleStyle: globalStyles.text,
+          headerTitleStyle: { color: "white" },
           headerTitle: "Đã xem gần đây",
         }}
       />

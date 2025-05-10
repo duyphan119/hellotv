@@ -1,26 +1,23 @@
-import LatestVideosSection from "@/components/videos/sections/LatestVideosSection";
-import VideosByCountrySection from "@/components/videos/sections/VideosByCountrySection";
-import VideosByTypeListSection from "@/components/videos/sections/VideosByTypeListSection";
-import WatchedVideosSection from "@/components/videos/sections/WatchedVideosSection";
+import LatestVideosCarousel from "@/components/LatestVideosCarousel";
+import VideosByCountry from "@/components/VideosByCountry";
+import VideosByTypeList from "@/components/VideosByTypeList";
 import { TypeList } from "@/data/video";
-import useGetLatestVideos from "@/hooks/useGetLatestVideos";
-import { globalStyles } from "@/utils/styles";
 import { ScrollView } from "react-native";
 
-export default function Index() {
-  const latestVideosQuery = useGetLatestVideos();
-
+export default function TabIndex() {
   return (
-    <ScrollView style={globalStyles.container}>
-      <LatestVideosSection
-        videos={latestVideosQuery.data?.pages?.[0]?.items.slice(0, 6) || []}
-      />
-      <WatchedVideosSection />
+    <ScrollView
+      style={{
+        backgroundColor: "black",
+        flex: 1,
+      }}
+    >
+      <LatestVideosCarousel />
       {["han-quoc", "trung-quoc", "nhat-ban"].map((countrySlug) => (
-        <VideosByCountrySection key={countrySlug} countrySlug={countrySlug} />
+        <VideosByCountry key={countrySlug} countrySlug={countrySlug} />
       ))}
       {(["phim-bo", "phim-le", "tv-shows"] as TypeList[]).map((typeList) => (
-        <VideosByTypeListSection key={typeList} typeList={typeList} />
+        <VideosByTypeList key={typeList} typeList={typeList} />
       ))}
     </ScrollView>
   );

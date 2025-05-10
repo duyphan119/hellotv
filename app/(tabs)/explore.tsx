@@ -1,28 +1,17 @@
-import VideoCard from "@/components/videos/sections/VideoCard";
-import VideosFilterSection from "@/components/videos/sections/VideosFilterSection";
-import useSearchVideos from "@/hooks/useSearchVideos";
-import { globalStyles } from "@/utils/styles";
-import { MaterialIcons } from "@expo/vector-icons";
+import LatestVideos from "@/components/LatestVideos";
+import SafeAreaView from "@/components/SafeAreaView";
+import SearchResults from "@/components/SearchResults";
+import VideosFilter from "@/components/VideosFilter";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Keyboard,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { VideosFilter } from "./videos";
+import { useRef, useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
+import { VideosFilterParams } from "./videos";
 
-export default function Explore() {
+export default function TabExplore() {
   const [text, setText] = useState<string>("");
 
   const [debouncedText] = useDebounce([text], 345);
-
   const textInputRef = useRef<TextInput | null>(null);
 
   const params = useLocalSearchParams();
@@ -33,60 +22,23 @@ export default function Explore() {
   const countrySlug = params?.countrySlug?.toString() || "";
   const year = params?.year?.toString() || "";
 
-  const { data, hasNextPage, fetchNextPage } = useSearchVideos({
-    category: categorySlug,
-    country: countrySlug,
-    year,
-    keyword: debouncedText,
-    limit: 12,
-  });
-
-  const handleFilter = (newFilter: VideosFilter) => {
-    router.setParams(newFilter);
+  const handleFilter = (videosFilterParams: VideosFilterParams) => {
+    router.setParams(videosFilterParams);
   };
 
-  useEffect(() => {
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        if (textInputRef.current) {
-          textInputRef.current.blur();
-        }
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-
   return (
-    <SafeAreaView style={globalStyles.container}>
-      <View style={styles.searchContainer}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.textInputContainer}>
         <TextInput
           ref={textInputRef}
-          value={text}
+          placeholder="Tìm kiếm phim"
+          placeholderTextColor="gray"
+          inputMode="search"
           onChangeText={setText}
-          placeholderTextColor={globalStyles.textSecondary.color}
-          placeholder="Tìm kiếm..."
-          style={[globalStyles.text, { flex: 1 }]}
-        />
-        {text !== "" && (
-          <TouchableOpacity onPress={() => setText("")} style={{ padding: 5 }}>
-            <MaterialIcons
-              name="close"
-              size={16}
-              color={globalStyles.textSecondary.color}
-            />
-          </TouchableOpacity>
-        )}
-        <MaterialIcons
-          name="search"
-          size={24}
-          color={globalStyles.textSecondary.color}
+          style={styles.textInput}
         />
       </View>
-      <VideosFilterSection
+      <VideosFilter
         hideTypeListFilter={true}
         typeList={""}
         categorySlug={categorySlug}
@@ -94,35 +46,31 @@ export default function Explore() {
         year={year}
         onFilter={handleFilter}
       />
-      {data && (
-        <FlatList
-          numColumns={3}
-          data={data.pages.map(({ items }) => items).flat()}
-          renderItem={({ item: video, index }) => (
-            <VideoCard numColumns={3} video={video} index={index} />
-          )}
-          onEndReached={() => {
-            hasNextPage && fetchNextPage();
+      {debouncedText !== "" ? (
+        <SearchResults
+          params={{
+            category: categorySlug,
+            country: countrySlug,
+            year,
+            keyword: debouncedText,
+            limit: 12,
           }}
-          ListFooterComponent={() =>
-            hasNextPage && (
-              <View style={{ alignItems: "center" }}>
-                <ActivityIndicator size={28} color={globalStyles.text.color} />
-              </View>
-            )
-          }
         />
+      ) : (
+        <LatestVideos />
       )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  searchContainer: {
+  container: { padding: 10, position: "relative", flex: 1, gap: 10 },
+  textInputContainer: {
     borderWidth: 1,
-    borderColor: globalStyles.textSecondary.color,
-    borderRadius: 4,
-    flexDirection: "row",
-    alignItems: "center",
+    borderColor: "gray",
+    borderRadius: 5,
+  },
+  textInput: {
+    color: "lightgray",
   },
 });
