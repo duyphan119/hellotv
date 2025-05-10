@@ -2,22 +2,52 @@ import { LatestVideo } from "@/data/video";
 import useGetLatestVideos from "@/hooks/useGetLatestVideos";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
+  FlatList,
   Image,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 export default function LatestVideosCarousel() {
-  const router = useRouter();
   const { data, isLoading } = useGetLatestVideos();
+
+  const router = useRouter();
+
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  const flatListRef = useRef<FlatList | null>(null);
+
+  const videos = data?.pages.map(({ items }) => items).flat() || [];
+
+  console.log(currentIndex);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      videos.length &&
+        setCurrentIndex((prevState) => (prevState + 1) % videos.length);
+    }, 6789);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [videos]);
+
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({
+        index: currentIndex,
+        animated: true,
+      });
+    }
+  }, [currentIndex]);
 
   const handlePress = (item: LatestVideo) => {
     router.push({
@@ -27,18 +57,19 @@ export default function LatestVideosCarousel() {
       },
     });
   };
-
   if (!data || isLoading) return <LatestVideosSkeleton />;
 
   return (
-    <Carousel
-      loop
-      autoPlay
-      autoPlayInterval={5678}
-      width={SCREEN_WIDTH}
-      height={(SCREEN_WIDTH * 9) / 16}
-      data={data.pages.map(({ items }) => items).flat()}
-      renderItem={({ item }) => (
+    <FlatList
+      ref={flatListRef}
+      data={videos}
+      horizontal={true}
+      getItemLayout={(item, index) => ({
+        index,
+        length: width,
+        offset: width * index,
+      })}
+      renderItem={({ item, index }) => (
         <Pressable
           onPress={() => handlePress(item)}
           style={styles.itemContainer}
@@ -49,6 +80,7 @@ export default function LatestVideosCarousel() {
           </BlurView>
         </Pressable>
       )}
+      style={styles.container}
     />
   );
 }
@@ -62,8 +94,13 @@ export function LatestVideosSkeleton() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: (width * 9) / 16,
+  },
   itemContainer: {
     position: "relative",
+    width,
+    height: (width * 9) / 16,
   },
   image: { width: "100%", height: "100%" },
   nameContainer: {
@@ -75,8 +112,8 @@ const styles = StyleSheet.create({
   },
   name: { color: "white" },
   skeletonContainer: {
-    width: SCREEN_WIDTH,
-    height: (SCREEN_WIDTH * 9) / 16,
+    width,
+    height: (width * 9) / 16,
   },
   skeletonLoader: {
     margin: "auto",
