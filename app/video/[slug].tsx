@@ -4,6 +4,7 @@ import useGetWatchedVideo from "@/hooks/useGetWatchedVideo";
 import { useScreenOrientation } from "@/hooks/useScreenOrientation";
 import { useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, SafeAreaView, StatusBar, View } from "react-native";
+import { useKeepAwake } from "expo-keep-awake";
 
 export default function ScreenVideo() {
   const { slug } = useLocalSearchParams();
@@ -13,6 +14,8 @@ export default function ScreenVideo() {
   const { data: watchedVideo } = useGetWatchedVideo(slug.toString());
 
   const { isLandscape } = useScreenOrientation();
+
+  useKeepAwake();
 
   return (
     <SafeAreaView
