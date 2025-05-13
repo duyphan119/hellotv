@@ -47,21 +47,34 @@ export const getWatchedVideo = async (slug: string) => {
 
 export const createWatchedVideo = async (inputs: WatchedVideo) => {
   try {
-    if (inputs.episode.currentTime <= 5) return;
     const watchedVideos = await getWatchedVideos();
 
     const index = watchedVideos.findIndex(
       ({ video: { slug } }) => slug === inputs.video.slug
     );
 
-    if (inputs.episode.currentTime < inputs.episode.duration - 5) {
-      if (index !== -1) {
-        watchedVideos.splice(index, 1);
-      }
-      watchedVideos.unshift(inputs);
+    if (index !== -1) {
+      watchedVideos.splice(index, 1);
+    }
+    watchedVideos.unshift(inputs);
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(watchedVideos));
+  } catch (error) {
+    console.log("createWatchedVideo error", error);
+  }
+};
+
+export const deleteWatchedVideo = async (videoSlug: string) => {
+  try {
+    const watchedVideos = await getWatchedVideos();
+    const index = watchedVideos.findIndex(
+      ({ video: { slug } }) => slug === videoSlug
+    );
+
+    if (index !== -1) {
+      watchedVideos.splice(index, 1);
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(watchedVideos));
     }
   } catch (error) {
-    console.log("createWatchedVideo error", error);
+    console.log("deleteWatchedVideo error", error);
   }
 };

@@ -1,31 +1,33 @@
 import { Episode, Video, VideoServer } from "@/data/video";
 import { WatchedVideo } from "@/data/watchedVideo";
 import useCreateWatchedVideo from "@/hooks/useCreateWatchedVideo";
-import { useScreenOrientation } from "@/hooks/useScreenOrientation";
-import React, { useEffect } from "react";
+import useDeleteWatchedVideo from "@/hooks/useDeleteWatchedVideo";
+import { useIsFullscreen } from "@/hooks/useIsFullscreen";
+import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import Episodes from "./Episodes";
 import VideoContent from "./VideoContent";
 import VideoPlayer from "./VideoPlayer";
 
-type ModalVideoContentProps = {
+type VideoDetailsProps = {
   video: Video;
   servers: VideoServer[];
   watchedVideo?: WatchedVideo | null;
 };
 
-export default function ModalVideoContent({
+export default function VideoDetails({
   servers,
   video,
   watchedVideo,
-}: ModalVideoContentProps) {
-  const [episode, setEpisode] = React.useState<Episode>();
-  const [server, setServer] = React.useState<VideoServer>();
-  const [defaultTime, setDefaultTime] = React.useState<number>(-1);
+}: VideoDetailsProps) {
+  const [episode, setEpisode] = useState<Episode>();
+  const [server, setServer] = useState<VideoServer>();
+  const [defaultTime, setDefaultTime] = useState<number>(-1);
 
-  const { mutate } = useCreateWatchedVideo(video.slug);
+  const { mutate: createWatchedVideo } = useCreateWatchedVideo(video.slug);
+  const { mutate: deleteWatchedVideo } = useDeleteWatchedVideo(video.slug);
 
-  const { isLandscape } = useScreenOrientation();
+  const { isFullscreen } = useIsFullscreen();
 
   const handleNext = () => {
     if (!episode) return;
@@ -113,7 +115,7 @@ export default function ModalVideoContent({
 
   const handleSave = (currentTime: number, duration: number) => {
     if (!episode || !server) return;
-    mutate({
+    createWatchedVideo({
       episode: {
         name: episode.name,
         serverName: server.name,
@@ -143,10 +145,11 @@ export default function ModalVideoContent({
         onNext={handleNext}
         onPrevious={handlePrevious}
         defaultTime={defaultTime}
-        title={isLandscape ? episode.filename : episode.name}
+        title={isFullscreen ? episode.filename : episode.name}
         onSave={handleSave}
+        onDelete={deleteWatchedVideo}
       />
-      {!isLandscape && (
+      {!isFullscreen && (
         <View style={{ padding: 10, flex: 1 }}>
           <View style={{ gap: 5 }}>
             <View>

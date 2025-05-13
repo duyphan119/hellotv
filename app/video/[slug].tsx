@@ -1,10 +1,10 @@
-import ModalVideoContent from "@/components/ModalVideoContent";
+import VideoDetails from "@/components/VideoDetails";
 import useGetVideo from "@/hooks/useGetVideo";
 import useGetWatchedVideo from "@/hooks/useGetWatchedVideo";
-import { useScreenOrientation } from "@/hooks/useScreenOrientation";
+import { useIsFullscreen } from "@/hooks/useIsFullscreen";
+import { useKeepAwake } from "expo-keep-awake";
 import { useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, SafeAreaView, StatusBar, View } from "react-native";
-import { useKeepAwake } from "expo-keep-awake";
 
 export default function ScreenVideo() {
   const { slug } = useLocalSearchParams();
@@ -13,7 +13,7 @@ export default function ScreenVideo() {
 
   const { data: watchedVideo } = useGetWatchedVideo(slug.toString());
 
-  const { isLandscape } = useScreenOrientation();
+  const { isFullscreen } = useIsFullscreen();
 
   useKeepAwake();
 
@@ -22,7 +22,7 @@ export default function ScreenVideo() {
       style={{
         backgroundColor: "black",
         flex: 1,
-        paddingTop: isLandscape ? 0 : StatusBar.currentHeight,
+        paddingTop: isFullscreen ? 0 : StatusBar.currentHeight,
       }}
     >
       {isLoading && (
@@ -35,7 +35,7 @@ export default function ScreenVideo() {
         </View>
       )}
       {!isLoading && data && data.video && (
-        <ModalVideoContent
+        <VideoDetails
           video={data.video}
           servers={data.servers}
           watchedVideo={watchedVideo}

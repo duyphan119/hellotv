@@ -88,7 +88,8 @@ export default function Episodes({
 
         <FlatList
           data={server.episodes}
-          windowSize={10}
+          windowSize={5}
+          maxToRenderPerBatch={20}
           ref={flatListRef}
           getItemLayout={(_, index) => ({
             index,

@@ -27,8 +27,6 @@ export default function LatestVideosCarousel() {
 
   const videos = data?.pages.map(({ items }) => items).flat() || [];
 
-  console.log(currentIndex);
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       videos.length &&

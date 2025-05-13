@@ -1,13 +1,11 @@
-import { VideoServer } from "@/data/video";
-import { useScreenOrientation } from "@/hooks/useScreenOrientation";
+import { useIsFullscreen } from "@/hooks/useIsFullscreen";
 import { formatSecondsToHMS } from "@/utils";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useEvent } from "expo";
 import { useRouter } from "expo-router";
-import * as ScreenOrientation from "expo-screen-orientation";
 import { useVideoPlayer, VideoSource, VideoView } from "expo-video";
-import React from "react";
+import { useRef, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -20,32 +18,30 @@ type VideoPlayerProps = {
   source: VideoSource;
   title: string;
   defaultTime: number;
-  servers?: VideoServer[];
   onNext: () => void;
   onPrevious: () => void;
   onSave: (currentTime: number, duration: number) => void;
+  onDelete: () => void;
 };
 
 export default function VideoPlayer({
   source,
   title,
   defaultTime,
-  servers = [],
   onNext,
   onPrevious,
   onSave,
+  onDelete,
 }: VideoPlayerProps) {
   const router = useRouter();
 
-  const { isLandscape, setIsLandscape } = useScreenOrientation();
+  const [currentTime, setCurrentTime] = useState<number>(defaultTime);
+  const [duration, setDuration] = useState<number>(0);
+  const [controlsVisible, setControlsVisible] = useState<boolean>(false);
 
-  const [currentTime, setCurrentTime] = React.useState<number>(defaultTime);
-  const [duration, setDuration] = React.useState<number>(0);
-  const [controlsVisible, setControlsVisible] = React.useState<boolean>(false);
-  const [episodesVisible, setEpisodesVisible] = React.useState<boolean>(false);
-  // const [isFullscreen, setIsFullscreen] = React.useState<boolean>(false);
+  const { isFullscreen, enterFullscreen, exitFullscreen } = useIsFullscreen();
 
-  const timeoutRef = React.useRef<any>(null);
+  const timeoutRef = useRef<any>(null);
 
   const player = useVideoPlayer(source, (player) => {
     player.play();
@@ -59,6 +55,8 @@ export default function VideoPlayer({
 
       if (floorCurrentTime && floorCurrentTime % 10 === 0) {
         onSave(currentTime, player.duration);
+      } else if (floorCurrentTime > player.duration - 200) {
+        onDelete();
       }
     });
 
@@ -69,7 +67,7 @@ export default function VideoPlayer({
     });
   });
 
-  const videoViewRef = React.useRef<VideoView | null>(null);
+  const videoViewRef = useRef<VideoView | null>(null);
 
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: true,
@@ -82,28 +80,10 @@ export default function VideoPlayer({
     }, 3333);
   };
 
-  const lockPortrait = () => {
-    ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.PORTRAIT
-    ).then(() => {
-      setIsLandscape(false);
-    });
-    ScreenOrientation.unlockAsync();
-  };
-
-  const lockLandscape = () => {
-    ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.LANDSCAPE
-    ).then(() => {
-      setIsLandscape(true);
-    });
-    ScreenOrientation.unlockAsync();
-  };
-
   const handleBack = () => {
     resetTimeout();
-    if (isLandscape) {
-      lockPortrait();
+    if (isFullscreen) {
+      exitFullscreen();
     } else {
       router.back();
     }
@@ -143,47 +123,12 @@ export default function VideoPlayer({
   };
 
   const handleFullscreen = () => {
-    if (isLandscape) {
-      lockPortrait();
+    if (isFullscreen) {
+      exitFullscreen();
     } else {
-      lockLandscape();
+      enterFullscreen();
     }
   };
-
-  React.useEffect(() => {
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
-    // ScreenOrientation.getOrientationAsync().then((orientation) => {
-    //   const compared =
-    //     orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT ||
-    //     orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT;
-    //   // setIsFullscreen(compared);
-    //   setIsLandscape(compared);
-    //   ScreenOrientation.lockAsync(
-    //     compared
-    //       ? ScreenOrientation.OrientationLock.LANDSCAPE
-    //       : ScreenOrientation.OrientationLock.PORTRAIT
-    //   );
-    // });
-  }, []);
-
-  React.useEffect(() => {
-    const subscription = ScreenOrientation.addOrientationChangeListener(
-      ({ orientationInfo: { orientation } }) => {
-        if (
-          orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT ||
-          orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT
-        ) {
-          lockLandscape();
-        } else {
-          lockPortrait();
-        }
-      }
-    );
-
-    return () => {
-      ScreenOrientation.removeOrientationChangeListener(subscription);
-    };
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -193,7 +138,7 @@ export default function VideoPlayer({
         allowsFullscreen
         nativeControls={false}
         style={
-          isLandscape
+          isFullscreen
             ? { height: "100%", width: "100%" }
             : {
                 width: "100%",
@@ -276,7 +221,7 @@ export default function VideoPlayer({
                 style={styles.fullscreen}
               >
                 <MaterialIcons
-                  name={isLandscape ? "fullscreen-exit" : "fullscreen"}
+                  name={isFullscreen ? "fullscreen-exit" : "fullscreen"}
                   color="white"
                   size={28}
                 />
