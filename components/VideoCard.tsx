@@ -17,29 +17,7 @@ type VideoCardProps = {
   numColumns?: number;
 };
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-
-export function VideoCardSkeletion({
-  index,
-  numColumns = 3,
-}: Omit<VideoCardProps, "video">) {
-  const gapItems = (numColumns - 1) * 10;
-  const paddingInline = 2 * 10;
-  return (
-    <View
-      style={{
-        width: (SCREEN_WIDTH - paddingInline - gapItems) / numColumns,
-        marginLeft: index % numColumns !== 0 ? 10 : 0,
-        marginTop: index >= numColumns ? 10 : 0,
-      }}
-    >
-      <BlurView style={styles.imageContainer}>
-        <ActivityIndicator style={{ margin: "auto" }} color="white" />
-      </BlurView>
-      <Text style={[styles.videoName, { color: "transparent" }]}>Name</Text>
-    </View>
-  );
-}
+const { width } = Dimensions.get("window");
 
 export default function VideoCard({
   video,
@@ -64,7 +42,7 @@ export default function VideoCard({
     <TouchableOpacity
       onPress={handlePress}
       style={{
-        width: (SCREEN_WIDTH - paddingInline - gapItems) / numColumns,
+        width: (width - paddingInline - gapItems) / numColumns,
         marginLeft: index % numColumns !== 0 ? 10 : 0,
         marginTop: index >= numColumns ? 10 : 0,
       }}

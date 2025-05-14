@@ -1,19 +1,7 @@
 import useGetLatestVideos from "@/hooks/useGetLatestVideos";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
-import VideoCard, { VideoCardSkeletion } from "./VideoCard";
-
-export function LatestVideosSkeleton() {
-  return (
-    <FlatList
-      scrollEnabled={false}
-      numColumns={3}
-      data={[1, 2, 3, 4, 5, 6]}
-      renderItem={({ index }) => (
-        <VideoCardSkeletion numColumns={3} index={index} />
-      )}
-    />
-  );
-}
+import { LatestVideosSkeleton } from "./LatestVideosCarousel";
+import VideoCard from "./VideoCard";
 
 export default function LatestVideos() {
   const { data, hasNextPage, fetchNextPage } = useGetLatestVideos();

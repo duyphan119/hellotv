@@ -1,13 +1,8 @@
 import { WatchedVideo } from "@/data/watchedVideo";
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type WatchedVideoCardProps = {
   item: WatchedVideo;
@@ -18,8 +13,22 @@ export default function WatchedVideoCard({
   item,
   index = 0,
 }: WatchedVideoCardProps) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push({
+      pathname: "/video/[slug]",
+      params: {
+        slug: item.video.slug,
+      },
+    });
+  };
+
   return (
-    <TouchableOpacity style={{ marginTop: index > 0 ? 10 : 0 }}>
+    <TouchableOpacity
+      onPress={handlePress}
+      style={{ marginTop: index > 0 ? 10 : 0 }}
+    >
       <View style={styles.imageContainer}>
         <Image source={{ uri: item.video.thumbnail }} style={styles.image} />
         <View
@@ -38,19 +47,6 @@ export default function WatchedVideoCard({
         {item.video.name} - {item.episode.name}
       </Text>
     </TouchableOpacity>
-  );
-}
-
-export function WatchedVideoCardSkeleton({
-  index = 0,
-}: Omit<WatchedVideoCardProps, "item">) {
-  return (
-    <View style={{ marginTop: index > 0 ? 10 : 0 }}>
-      <View style={styles.image}>
-        <ActivityIndicator color="white" style={styles.loader} />
-      </View>
-      <Text style={styles.transparentName}>Name</Text>
-    </View>
   );
 }
 
@@ -77,9 +73,5 @@ const styles = StyleSheet.create({
   name: { color: "white", marginTop: 10 },
   loader: {
     margin: "auto",
-  },
-  transparentName: {
-    color: "transparent",
-    marginTop: 10,
   },
 });

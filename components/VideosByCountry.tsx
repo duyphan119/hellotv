@@ -1,5 +1,6 @@
 import useGetVideosByCountry from "@/hooks/useGetVideosByCountry";
-import HomeVideos, { HomeVideosSkeleton } from "./HomeVideos";
+import HomeVideos from "./HomeVideos";
+import HomeVideosSkeleton from "./skeletons/HomeVideosSkeleton";
 
 type VideosByCountryProps = {
   countrySlug: string;

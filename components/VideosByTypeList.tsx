@@ -1,6 +1,7 @@
 import { TypeList } from "@/data/video";
 import useGetVideosByTypeList from "@/hooks/useGetVideosByTypeList";
-import HomeVideos, { HomeVideosSkeleton } from "./HomeVideos";
+import HomeVideos from "./HomeVideos";
+import HomeVideosSkeleton from "./skeletons/HomeVideosSkeleton";
 
 type VideosByTypeListProps = {
   typeList: TypeList;

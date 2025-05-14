@@ -1,6 +1,5 @@
-import WatchedVideoCard, {
-  WatchedVideoCardSkeleton,
-} from "@/components/WatchedVideoCard";
+import WatchedVideoCardSkeleton from "@/components/skeletons/WatchedVideoCardSkeleton";
+import WatchedVideoCard from "@/components/WatchedVideoCard";
 import useGetWatchedVideos from "@/hooks/useGetWatchedVideos";
 import { FlatList, StyleSheet, View } from "react-native";
 
