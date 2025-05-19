@@ -25,7 +25,6 @@ export default function VideoDetails({
   const [defaultTime, setDefaultTime] = useState<number>(-1);
 
   const { mutate: createWatchedVideo } = useCreateWatchedVideo(video.slug);
-  const { mutate: deleteWatchedVideo } = useDeleteWatchedVideo(video.slug);
 
   const { isFullscreen } = useIsFullscreen();
 
@@ -147,7 +146,6 @@ export default function VideoDetails({
         defaultTime={defaultTime}
         title={isFullscreen ? episode.filename : episode.name}
         onSave={handleSave}
-        onDelete={deleteWatchedVideo}
       />
       {!isFullscreen && (
         <View style={{ padding: 10, flex: 1 }}>

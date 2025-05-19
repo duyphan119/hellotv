@@ -1,8 +1,8 @@
 import { SearchVideosParams } from "@/data/video";
 import useSearchVideos from "@/hooks/useSearchVideos";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
-import VideoCard from "./VideoCard";
 import { LatestVideosSkeleton } from "./LatestVideosCarousel";
+import VideoCard from "./VideoCard";
 
 type SearchResultsProps = {
   params: SearchVideosParams;

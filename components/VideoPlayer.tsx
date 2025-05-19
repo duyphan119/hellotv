@@ -4,8 +4,13 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { useEvent } from "expo";
 import { useRouter } from "expo-router";
-import { useVideoPlayer, VideoSource, VideoView } from "expo-video";
-import { useRef, useState } from "react";
+import {
+  TimeUpdateEventPayload,
+  useVideoPlayer,
+  VideoSource,
+  VideoView,
+} from "expo-video";
+import { useEffect, useRef, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -21,7 +26,6 @@ type VideoPlayerProps = {
   onNext: () => void;
   onPrevious: () => void;
   onSave: (currentTime: number, duration: number) => void;
-  onDelete: () => void;
 };
 
 export default function VideoPlayer({
@@ -31,7 +35,6 @@ export default function VideoPlayer({
   onNext,
   onPrevious,
   onSave,
-  onDelete,
 }: VideoPlayerProps) {
   const router = useRouter();
 
@@ -48,18 +51,6 @@ export default function VideoPlayer({
     player.currentTime = defaultTime;
     player.timeUpdateEventInterval = 1;
 
-    player.addListener("timeUpdate", ({ currentTime }) => {
-      setCurrentTime(currentTime);
-
-      const floorCurrentTime = Math.floor(currentTime);
-
-      if (floorCurrentTime && floorCurrentTime % 10 === 0) {
-        onSave(currentTime, player.duration);
-      } else if (floorCurrentTime > player.duration - 200) {
-        onDelete();
-      }
-    });
-
     player.addListener("statusChange", ({ status }) => {
       if (status === "readyToPlay") {
         setDuration(player.duration);
@@ -72,6 +63,24 @@ export default function VideoPlayer({
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: true,
   });
+
+  useEffect(() => {
+    const timeUpdateListener = ({ currentTime }: TimeUpdateEventPayload) => {
+      setCurrentTime(currentTime);
+
+      const floorCurrentTime = Math.floor(currentTime);
+
+      if (floorCurrentTime && floorCurrentTime % 10 === 0) {
+        onSave(currentTime, player.duration);
+      }
+    };
+
+    if (controlsVisible) {
+      player.addListener("timeUpdate", timeUpdateListener);
+    } else {
+      player.removeAllListeners("timeUpdate");
+    }
+  }, [controlsVisible]);
 
   const resetTimeout = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -119,6 +128,7 @@ export default function VideoPlayer({
 
   const toggleControlsVisible = () => {
     resetTimeout();
+
     setControlsVisible((previousState) => !previousState);
   };
 
@@ -196,7 +206,7 @@ export default function VideoPlayer({
             </View>
             <View style={styles.groupVideoControlsBottom}>
               <Text style={styles.currentTime}>
-                {formatSecondsToHMS(currentTime)}
+                {formatSecondsToHMS(Math.max(currentTime, player.currentTime))}
               </Text>
               <Slider
                 maximumTrackTintColor="white"
@@ -205,7 +215,7 @@ export default function VideoPlayer({
                 maximumValue={duration}
                 step={1}
                 thumbTintColor="red"
-                value={currentTime}
+                value={Math.max(currentTime, player.currentTime)}
                 onSlidingComplete={(value) => {
                   player.currentTime = value;
 

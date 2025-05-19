@@ -1,8 +1,8 @@
 import { VideosFilterParams } from "@/app/(tabs)/videos";
 import useGetVideosFilterResults from "@/hooks/useGetVideosFilterResults";
 import { ActivityIndicator, FlatList, View } from "react-native";
-import { LatestVideosSkeleton } from "./LatestVideos";
 import VideoCard from "./VideoCard";
+import LatestVideosSkeleton from "./skeletons/LatestVideosSkeleton";
 
 type VideosProps = {
   filter: VideosFilterParams;
