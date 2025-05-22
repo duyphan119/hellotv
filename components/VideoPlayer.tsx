@@ -80,7 +80,19 @@ export default function VideoPlayer({
     } else {
       player.removeAllListeners("timeUpdate");
     }
+
+    return () => {
+      player.removeAllListeners("timeUpdate");
+    };
   }, [controlsVisible]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const resetTimeout = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -206,7 +218,7 @@ export default function VideoPlayer({
             </View>
             <View style={styles.groupVideoControlsBottom}>
               <Text style={styles.currentTime}>
-                {formatSecondsToHMS(Math.max(currentTime, player.currentTime))}
+                {formatSecondsToHMS(currentTime)}
               </Text>
               <Slider
                 maximumTrackTintColor="white"
@@ -215,7 +227,7 @@ export default function VideoPlayer({
                 maximumValue={duration}
                 step={1}
                 thumbTintColor="red"
-                value={Math.max(currentTime, player.currentTime)}
+                value={currentTime}
                 onSlidingComplete={(value) => {
                   player.currentTime = value;
 
